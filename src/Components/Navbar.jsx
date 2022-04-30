@@ -1,12 +1,40 @@
-import React from 'react';
+/* eslint-disable react/destructuring-assignment */
+/* eslint-disable react/prop-types */
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
-const Navbar = () => (
-  <Container>
-    <Title>Todo List</Title>
-    <Button>Create Task</Button>
-  </Container>
-);
+const Navbar = ({ addTodo }) => {
+  const [input, setInput] = useState('');
+
+  const handleChange = (e) => {
+    setInput(e.target.value);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    addTodo({
+      id: Math.floor(Math.random() * 10000),
+      text: input,
+    });
+    setInput('');
+  };
+
+  return (
+    <Container>
+      <Form onSubmit={handleSubmit}>
+        <Input
+          placeholder="Add a Task"
+          type="text"
+          name="text"
+          value={input}
+          onChange={handleChange}
+        />
+        <Button>Create Task</Button>
+      </Form>
+    </Container>
+  );
+};
 
 export default Navbar;
 
@@ -20,16 +48,27 @@ const Container = styled.div`
   width: 100vw;
 `;
 
-const Title = styled.h1``;
+// const Title = styled.h1``;
 
-const Button = styled.div`
+const Form = styled.form``;
+
+const Input = styled.input`
+  border-radius: 10px;
+  height: 30px;
+  width: 200px;
+  margin: 0 10px;
+  ::placeholder {
+    color: purple;
+    text-align: center;
+  }
+`;
+
+const Button = styled.button`
   border-radius: 10px;
   background: #7900ff;
   margin-top: 20px;
+  border: none;
   padding: 5px 30px;
   color: white;
-  :hover {
-    letter-spacing: 2px;
-    transition: 1s;
-  }
+  cursor: pointer;
 `;
