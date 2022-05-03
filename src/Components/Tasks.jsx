@@ -1,14 +1,19 @@
+/* eslint-disable no-empty */
+/* eslint-disable react/jsx-curly-newline */
+/* eslint-disable implicit-arrow-linebreak */
 /* eslint-disable object-curly-newline */
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 /* eslint-disable react/jsx-one-expression-per-line */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import CheckIcon from '@mui/icons-material/Check';
+import { motion, AnimatePresence } from 'framer-motion';
 import EditForm from './EditForm';
+import Variants from '../utils/variants';
 
 const Tasks = ({ todos, removeTodo, completeTodo, updateTodo }) => {
   const [edit, setEdit] = useState({
@@ -24,47 +29,62 @@ const Tasks = ({ todos, removeTodo, completeTodo, updateTodo }) => {
     });
     setShow(!show);
   };
+
   if (edit.id) {
-    setShow(!show);
+    return <EditForm edit={edit} addTodo={submitUpdate} />;
   }
-  // if (edit.id) {
-  //   return <EditForm edit={edit} addTodo={submitUpdate} />;
-  // }
 
   return (
     <Container>
-      <TaskTitle>All Tasks</TaskTitle>
+      <TaskTitle
+        as={motion.h2}
+        animate={{ opacity: [0, 1] }}
+        transition={{ ease: 'easeOut', duration: 5 }}
+      >
+        All Tasks
+      </TaskTitle>
       <TaskContent>
-        {todos.length ? (
-          todos.map((todo, index) => (
-            <Card className="box1" key={index}>
-              <Title className="colorized">React</Title>
-              <Content className="colorized">{todo.text}</Content>
-              <Icons>
-                <Icon1
-                  className="colorized"
-                  onClick={() => completeTodo(todo.id)}
-                >
-                  <CheckIcon />
-                </Icon1>
-                <Icon1
-                  className="colorized"
-                  onClick={() => setEdit({ id: todo.id, value: todo.text })}
-                >
-                  <EditIcon />
-                </Icon1>
-                <Icon1
-                  className="colorized"
-                  onClick={() => removeTodo(todo.id)}
-                >
-                  <DeleteIcon />
-                </Icon1>
-              </Icons>
-            </Card>
-          ))
-        ) : (
-          <div>No hay tareas</div>
-        )}
+        <AnimatePresence>
+          {todos.length ? (
+            todos.map((todo, index) => (
+              <Card
+                className="box1"
+                key={index}
+                as={motion.div}
+                variants={Variants}
+                animate="visible"
+                exit="hidden"
+              >
+                <Title className="colorized">{index}</Title>
+                <Content className="colorized">{todo.text}</Content>
+                <Icons>
+                  <Icon1
+                    className="colorized"
+                    onClick={() => completeTodo(todo.id)}
+                  >
+                    <CheckIcon />
+                  </Icon1>
+                  <Icon1
+                    className="colorized"
+                    onClick={() => setEdit({ id: todo.id, value: todo.text })}
+                  >
+                    <EditIcon />
+                  </Icon1>
+                  <Icon1
+                    className="colorized"
+                    onClick={() => removeTodo(todo.id)}
+                  >
+                    <DeleteIcon />
+                  </Icon1>
+                </Icons>
+              </Card>
+            ))
+          ) : (
+            <motion.div variants={Variants} animate="visible">
+              No hay tareas
+            </motion.div>
+          )}
+        </AnimatePresence>
       </TaskContent>
     </Container>
   );
@@ -86,10 +106,13 @@ const Card = styled.div`
   display: flex;
   align-items: flex-start;
   flex-direction: column;
+  position: relative;
   width: 250px;
   height: 180px;
   border: 1px solid black;
+  box-shadow: -4px 4px 5px 0px rgba(0, 0, 0, 0.75);
   border-radius: 5px;
+  overflow: hidden;
   margin: 10px 25px;
   /* .colorized {
       color: blue;

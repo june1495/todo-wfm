@@ -4,6 +4,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
+import { motion } from 'framer-motion';
 import Navbar from '../Components/Navbar';
 import Tasks from '../Components/Tasks';
 
@@ -16,10 +17,9 @@ const Home = () => {
       return;
     }
 
-    const newTodos = [todo, ...todos];
+    const newTodos = [...todos, todo];
 
     setTodos(newTodos);
-    // console.log(...todos, todo);
   };
 
   const updateTodo = (todoId, newValue) => {
@@ -54,7 +54,13 @@ const Home = () => {
   return (
     <Container>
       <Content>
-        <Title>Todo List</Title>
+        <Title
+          as={motion.h1}
+          animate={{ opacity: [0, 1] }}
+          transition={{ ease: 'easeOut', duration: 5 }}
+        >
+          Todo List
+        </Title>
         <Navbar addTodo={addTodo} />
       </Content>
       <Tasks
