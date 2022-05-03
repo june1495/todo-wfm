@@ -1,10 +1,12 @@
 /* eslint-disable react/prop-types */
-import React, { useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { motion, AnimatePresence } from 'framer-motion';
+import Variants from '../utils/variants';
 
-const EditForm = ({ addTodo }) => {
-  const [input, setInput] = useState('');
-
+const EditForm = ({ addTodo, edit }) => {
+  const [input, setInput] = useState(edit ? edit.value : '');
+  const inputRef = useRef();
   const handleChange = (e) => {
     setInput(e.target.value);
   };
@@ -18,27 +20,45 @@ const EditForm = ({ addTodo }) => {
     });
     setInput('');
   };
+  useEffect(() => {
+    inputRef.current.focus();
+  });
   return (
-    <Container>
-      <Content>
-        <Form onSubmit={handleSubmit}>
-          <Input
-            placeholder="Edit task"
-            type="text"
-            name="text"
-            value={input}
-            onChange={handleChange}
-          />
-          <Button>Update</Button>
-        </Form>
-      </Content>
-    </Container>
+    <AnimatePresence>
+      <Container
+        as={motion.div}
+        variants={Variants}
+        animate="visible"
+        exit="hidden"
+      >
+        <Title>Edit Task</Title>
+        <Content>
+          <Form onSubmit={handleSubmit}>
+            <Input
+              placeholder="Edit task"
+              type="text"
+              name="text"
+              value={input}
+              onChange={handleChange}
+              ref={inputRef}
+            />
+            <Button>Update</Button>
+          </Form>
+        </Content>
+      </Container>
+    </AnimatePresence>
   );
 };
 
 export default EditForm;
 
-const Container = styled.div``;
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* justify-content: center; */
+  /* margin-top: 95px; */
+`;
 
 const Content = styled.div`
   display: flex;
@@ -49,6 +69,10 @@ const Content = styled.div`
   border: 1px solid black;
   border-radius: 5px;
   margin: 10px 25px;
+`;
+
+const Title = styled.h2`
+  margin: 30px;
 `;
 
 const Form = styled.form`
